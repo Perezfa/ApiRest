@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,10 +24,12 @@ public class EmailRestController {
 	
 	
 	
-	@PostMapping("/registro_nuevo")
-	public ResponseEntity<String> sendEmail(@RequestBody  String email){
-
-		 final String username = "vitualcoach@gmail.com";
+	@RequestMapping(value = "/registro_nuevo", method = RequestMethod.POST)
+	public ResponseEntity<String> sendEmail(@RequestParam("email") String email,@RequestParam("subject") String subject, @RequestParam("body") String body){
+		 System.out.println(email);
+		 System.out.println(subject);
+		 System.out.println(body);
+		 	final String username = "vitualcoach@gmail.com";
 	        final String password = "urjc1995";
 
 	        Properties props = new Properties();
@@ -32,6 +37,7 @@ public class EmailRestController {
 	        props.put("mail.smtp.auth", "true");
 	        props.put("mail.smtp.host", "smtp.gmail.com");
 	        props.put("mail.smtp.port", "587");
+	        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
 	        Session session = Session.getInstance(props,
 	          new javax.mail.Authenticator() {
@@ -46,8 +52,8 @@ public class EmailRestController {
 	            message.setFrom(new InternetAddress("vitualcoach@gmail.com"));
 	            message.setRecipients(Message.RecipientType.TO,
 	                InternetAddress.parse(email));
-	            message.setSubject("Te has registrado en VirtualCoach");
-	            message.setText("Gracias por registrarte en VirtualCoach, dentro de poco podras empezar a registrar marcas y ejercicios.");
+	            message.setSubject(subject);
+	            message.setText(body);
 
 	            Transport.send(message);
 
@@ -58,7 +64,7 @@ public class EmailRestController {
 	        }
 		
 		
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("Hola que ase",HttpStatus.NOT_FOUND);
 	}
 
 
